@@ -25,13 +25,11 @@ In your application's startup or configuration class, register the services prov
 
 ```csharp
 using Microsoft.Extensions.DependencyInjection;
-using RickNMorty.API; // Replace with actual namespace
+using RickNMorty.Common; // Replace with actual namespace
 
 public void ConfigureServices(IServiceCollection services)
 {
-    services.AddScoped<ICharacterService, CharacterService>();
-    services.AddScoped<ILocationService, LocationService>();
-    services.AddScoped<IEpisodeService, EpisodeService>();
+    services.AddTransient<RegistrationContainer>();
 }
 ```
 
@@ -43,7 +41,7 @@ Now you can inject and use the services in your application components.
 Retrieve a list of all characters from the "Rick and Morty" universe.
 
 ```csharp
-using RickNMorty.API; // Replace with actual namespace
+using RickNMorty.Common; // Replace with actual namespace
 
 public class MyService
 {
@@ -56,7 +54,7 @@ public class MyService
 
     public void FetchAllCharacters()
     {
-        var allCharacters = _characterService.GetAll();
+        var allCharacters = _characterService.GetAllCharacters(1);
         // Process the characters
     }
 }
@@ -78,7 +76,31 @@ public class MyService
 
     public void FetchCharacterById(int characterId)
     {
-        var character = _characterService.GetItemsByID(characterId);
+        var character = _characterService.GetCharacter(characterId);
+        // Process the character
+    }
+}
+```
+
+### Getting a List of Characters by ID
+Retrieve a specific list of characters using their ID.
+
+```csharp
+using RickNMorty.API; // Replace with actual namespace
+
+public class MyService
+{
+    private readonly ICharacterService _characterService;
+
+    public MyService(ICharacterService characterService)
+    {
+        _characterService = characterService;
+    }
+
+    public void FetchCharacterById(int characterId)
+    {
+        var characterList = new List<int>(){1,2,3}
+        var character = _characterService.GetCharacters(characterList);
         // Process the character
     }
 }
@@ -89,7 +111,7 @@ public class MyService
 Retrieve a list of all locations from the "Rick and Morty" universe.
 
 ```csharp
-using RickNMorty.API; // Replace with actual namespace
+using RickNMorty.Common; // Replace with actual namespace
 
 public class MyService
 {
@@ -102,7 +124,7 @@ public class MyService
 
     public void FetchAllLocations()
     {
-        var allLocations = _locationService.GetAll();
+        var allLocations = _locationService.GetLocations(1);
         // Process the locations
     }
 }
@@ -111,7 +133,7 @@ public class MyService
 Retrieve a specific location using its ID.
 
 ```csharp
-using RickNMorty.API; // Replace with actual namespace
+using RickNMorty.Common; // Replace with actual namespace
 
 public class MyService
 {
@@ -124,7 +146,31 @@ public class MyService
 
     public void FetchLocationById(int locationId)
     {
-        var location = _locationService.GetItemsByID(locationId);
+        var location = _locationService.GetLocation(locationId);
+        // Process the location
+    }
+}
+```
+
+### Getting a Location by ID
+Retrieve a specific location using its ID.
+
+```csharp
+using RickNMorty.Common; // Replace with actual namespace
+
+public class MyService
+{
+    private readonly ILocationService _locationService;
+
+    public MyService(ILocationService locationService)
+    {
+        _locationService = locationService;
+    }
+
+    public void FetchLocationsById()
+    {
+        var locationList = new List<int>(){1,2,3}
+        var locations = _locationService.GetLocations(locationList);
         // Process the location
     }
 }
@@ -135,7 +181,7 @@ public class MyService
 Retrieve a list of all episodes from the "Rick and Morty" universe.
 
 ```csharp
-using RickNMorty.API; // Replace with actual namespace
+using RickNMorty.Common; // Replace with actual namespace
 
 public class MyService
 {
@@ -148,7 +194,7 @@ public class MyService
 
     public void FetchAllEpisodes()
     {
-        var allEpisodes = _episodeService.GetAll();
+        var allEpisodes = _episodeService.GetAllEpisodes();
         // Process the episodes
     }
 }
@@ -171,25 +217,36 @@ public class MyService
 
     public void FetchEpisodeById(int episodeId)
     {
-        var episode = _episodeService.GetItemsByID(episodeId);
+        var episode = _episodeService.GetEpisode(episodeId);
         // Process the episode
     }
 }
 ```
 
-## Error Handling
-In case of API errors, the services may throw exceptions. Handle these exceptions appropriately in your application.
+### Getting a List Of Episodes by ID
+Retrieve a specific list of episodes using their ID.
 
 ```csharp
-try
+using RickNMorty.Common; // Replace with actual namespace
+
+public class MyService
 {
-    var character = _characterService.GetCharacterByID(characterId);
-}
-catch (RickNMortyApiException ex)
-{
-    // Handle the exception here
+    private readonly IEpisodeService _episodeService;
+
+    public MyService(IEpisodeService episodeService)
+    {
+        _episodeService = episodeService;
+    }
+
+    public void GetEpisodesById()
+    {
+        var episodesList = new List<int>(){1,2,3}
+        var episodes = _episodeService.GetEpisodes(locationList);
+        // Process the location
+    }
 }
 ```
+
 # Contributing
 If you find any issues or want to contribute, please open an issue or create a pull request on the GitHub repository.
 
