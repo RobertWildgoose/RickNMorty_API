@@ -12,21 +12,29 @@ namespace RickNMorty.Common.Services
 {
 	public class EpisodeService : BaseService, IEpisodeService
 	{
-		public EpisodeService(IApiConfig apiConfig, IExceptionHandler exceptionHandler, IRequestHandler requestHandler) : base(apiConfig, exceptionHandler, requestHandler)
+		public EpisodeService(IApiConfig apiConfig, IRequestHandler requestHandler) : base(apiConfig, requestHandler)
 		{
 
 		}
 
 		public async Task<EpisodeResponse> GetAllEpisodes(int page)
 		{
-			var response = await GetData<EpisodeResponse>($"episode?page={page}");
-			return response;
+			var response = await Get<EpisodeResponse>($"episode?page={page}");
+			if (response != null && response.Success)
+			{
+				return response.Data;
+			}
+			return null;
 		}
 
 		public async Task<Episode> GetEpisode(int episodeId)
 		{
-			var response = await GetData<Episode>($"episode/{episodeId}");
-			return response;
+			var response = await Get<Episode>($"episode/{episodeId}");
+			if (response != null && response.Success)
+			{
+				return response.Data;
+			}
+			return null;
 		}
 
 		public async Task<List<Episode>> GetEpisodes(IEnumerable<int> episodeIds)
@@ -34,8 +42,11 @@ namespace RickNMorty.Common.Services
 			if (episodeIds != null && episodeIds.Count() > 0)
 			{
 				var arrayAsString = String.Join(',', episodeIds);
-				var response = await GetDataList<Episode>($"episode/{arrayAsString}");
-				return response;
+				var response = await GetEnumerable<Episode>($"episode/{arrayAsString}");
+				if (response != null && response.Success)
+				{
+					return response.Data;
+				}
 			}
 			return null;
 		}

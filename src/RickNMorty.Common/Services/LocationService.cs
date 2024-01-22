@@ -12,15 +12,19 @@ namespace RickNMorty.Common.Services
 {
 	public class LocationService : BaseService, ILocationService
 	{
-		public LocationService(IApiConfig apiConfig, IExceptionHandler exceptionHandler, IRequestHandler requestHandler) : base(apiConfig, exceptionHandler, requestHandler)
+		public LocationService(IApiConfig apiConfig, IRequestHandler requestHandler) : base(apiConfig, requestHandler)
 		{
 
 		}
 
 		public async Task<Location> GetLocation(int locationId)
 		{
-			var response = await GetData<Location>($"location/{locationId}");
-			return response;
+			var response = await Get<Location>($"location/{locationId}");
+			if (response != null && response.Success)
+			{
+				return response.Data;
+			}
+			return null;
 		}
 
 		public async Task<List<Location>> GetLocations(IEnumerable<int> locationIds)
@@ -28,16 +32,23 @@ namespace RickNMorty.Common.Services
 			if (locationIds != null && locationIds.Count() > 0)
 			{
 				var arrayAsString = String.Join(',', locationIds);
-				var response = await GetDataList<Location>($"location/{arrayAsString}");
-				return response;
+				var response = await GetEnumerable<Location>($"location/{arrayAsString}");
+				if (response != null && response.Success)
+				{
+					return response.Data;
+				}
 			}
 			return null;
 		}
 
 		public async Task<LocationResponse> GetLocations(int page)
 		{
-			var response = await GetData<LocationResponse>($"location?page={page}");
-			return response;
+			var response = await Get<LocationResponse>($"location?page={page}");
+			if (response != null && response.Success)
+			{
+				return response.Data;
+			}
+			return null;
 		}
 	}
 }

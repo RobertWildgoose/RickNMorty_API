@@ -12,21 +12,29 @@ namespace RickNMorty.Common.Services
 {
 	public class CharacterService : BaseService, ICharacterService
 	{
-		public CharacterService(IApiConfig apiConfig, IExceptionHandler exceptionHandler, IRequestHandler requestHandler) : base(apiConfig, exceptionHandler, requestHandler)
+		public CharacterService(IApiConfig apiConfig, IRequestHandler requestHandler) : base(apiConfig, requestHandler)
 		{
 
 		}
 
 		public async Task<CharactersResponse> GetAllCharacters(int page)
 		{
-			var response = await GetData<CharactersResponse>($"character?page={page}");
-			return response;
+			var response = await Get<CharactersResponse>($"character?page={page}");
+			if (response != null && response.Success)
+			{
+				return response.Data;
+			}
+			return null;
 		}
 
 		public async Task<Character> GetCharacter(int characterId)
 		{
-			var response = await GetData<Character>($"character/{characterId}");
-			return response;
+			var response = await Get<Character>($"character/{characterId}");
+			if (response != null && response.Success)
+			{
+				return response.Data;
+			}
+			return null;
 		}
 
 		public async Task<List<Character>> GetCharacters(IEnumerable<int> characters)
@@ -34,8 +42,11 @@ namespace RickNMorty.Common.Services
 			if (characters != null && characters.Count() > 0)
 			{
 				var arrayAsString = String.Join(',', characters);
-				var response = await GetDataList<Character>($"character/{arrayAsString}");
-				return response;
+				var response = await GetEnumerable<Character>($"character/{arrayAsString}");
+				if (response != null && response.Success)
+				{
+					return response.Data;
+				}
 			}
 			return null;
 		}
