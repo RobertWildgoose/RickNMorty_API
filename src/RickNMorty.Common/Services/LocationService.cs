@@ -38,7 +38,7 @@ namespace RickNMorty.Common.Services
 					return response.Data;
 				}
 			}
-			return null;
+			return new List<Location>();
 		}
 
 		public async Task<LocationResponse> GetLocations(int page)

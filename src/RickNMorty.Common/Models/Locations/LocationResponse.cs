@@ -1,5 +1,6 @@
 ﻿using ApiUtilities.Common.Models;
 using Newtonsoft.Json;
+using RickNMorty.Common.Models.Common;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -8,7 +9,7 @@ using System.Threading.Tasks;
 
 namespace RickNMorty.Common.Models.Locations
 {
-	public class LocationResponse : BaseResponse
+    public class LocationResponse : BaseResponse
 	{
 		[JsonProperty(PropertyName = "info")]
 		public ResponseInfo Info { get; set; }

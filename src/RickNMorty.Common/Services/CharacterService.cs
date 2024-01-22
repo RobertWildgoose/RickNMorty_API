@@ -48,7 +48,7 @@ namespace RickNMorty.Common.Services
 					return response.Data;
 				}
 			}
-			return null;
+			return new List<Character>();
 		}
 	}
 }
