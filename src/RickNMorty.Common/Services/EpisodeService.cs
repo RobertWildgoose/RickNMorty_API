@@ -1,6 +1,7 @@
 ﻿using ApiUtilities.Common.Interfaces;
 using ApiUtilities.Common.Services;
 using RickNMorty.Common.Interfaces;
+using RickNMorty.Common.Models.Characters;
 using RickNMorty.Common.Models.Episodes;
 using System;
 using System.Collections.Generic;
@@ -12,7 +13,7 @@ namespace RickNMorty.Common.Services
 {
 	public class EpisodeService : BaseService, IEpisodeService
 	{
-		public EpisodeService(IApiConfig apiConfig, IRequestHandler requestHandler) : base(apiConfig, requestHandler)
+		public EpisodeService(IHttpClientService httpClientService, IBaseConfiguration apiConfig) : base(httpClientService, apiConfig)
 		{
 
 		}
@@ -39,14 +40,18 @@ namespace RickNMorty.Common.Services
 
 		public async Task<List<Episode>> GetEpisodes(IEnumerable<int> episodeIds)
 		{
-			if (episodeIds != null && episodeIds.Count() > 0)
+			if (episodeIds != null && episodeIds.Any())
 			{
-				var arrayAsString = String.Join(',', episodeIds);
-				var response = await GetEnumerable<Episode>($"episode/{arrayAsString}");
-				if (response != null && response.Success)
+				var episodeList = new List<Episode>();
+				foreach (var episode in episodeIds)
 				{
-					return response.Data;
+					var response = await GetEpisode(episode);
+					if (response != null && response.Success)
+					{
+						episodeList.Add(response);
+					}
 				}
+				return episodeList;
 			}
 			return new List<Episode>();
 		}

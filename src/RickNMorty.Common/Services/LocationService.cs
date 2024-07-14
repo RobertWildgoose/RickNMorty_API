@@ -1,6 +1,7 @@
 ﻿using ApiUtilities.Common.Interfaces;
 using ApiUtilities.Common.Services;
 using RickNMorty.Common.Interfaces;
+using RickNMorty.Common.Models.Characters;
 using RickNMorty.Common.Models.Locations;
 using System;
 using System.Collections.Generic;
@@ -12,7 +13,8 @@ namespace RickNMorty.Common.Services
 {
 	public class LocationService : BaseService, ILocationService
 	{
-		public LocationService(IApiConfig apiConfig, IRequestHandler requestHandler) : base(apiConfig, requestHandler)
+
+		public LocationService(IHttpClientService httpClientService, IBaseConfiguration apiConfig) : base(httpClientService, apiConfig)
 		{
 
 		}
@@ -29,14 +31,18 @@ namespace RickNMorty.Common.Services
 
 		public async Task<List<Location>> GetLocations(IEnumerable<int> locationIds)
 		{
-			if (locationIds != null && locationIds.Count() > 0)
+			if (locationIds != null && locationIds.Any())
 			{
-				var arrayAsString = String.Join(',', locationIds);
-				var response = await GetEnumerable<Location>($"location/{arrayAsString}");
-				if (response != null && response.Success)
+				var characterList = new List<Location>();
+				foreach (var location in locationIds)
 				{
-					return response.Data;
+					var response = await GetLocation(location);
+					if (response != null && response.Success)
+					{
+						characterList.Add(response);
+					}
 				}
+				return characterList;
 			}
 			return new List<Location>();
 		}

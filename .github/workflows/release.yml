@@ -16,6 +16,8 @@ jobs:
       uses: actions/setup-dotnet@v1
     - name: Build
       run: dotnet build -c Release ./src/RickNMorty.Common/RickNMorty.Common.csproj
+    - name: Run Tests
+      run: dotnet test -c Release ./tests/RickNMorty.Common/RickNMorty.Tests.csproj
     - name: Pack nugets
       run: dotnet pack -c Release ./src/RickNMorty.Common/RickNMorty.Common.csproj --no-build --output .
     - name: Push to NuGet

@@ -12,7 +12,7 @@ namespace RickNMorty.Common.Services
 {
 	public class CharacterService : BaseService, ICharacterService
 	{
-		public CharacterService(IApiConfig apiConfig, IRequestHandler requestHandler) : base(apiConfig, requestHandler)
+		public CharacterService(IHttpClientService httpClientService,IBaseConfiguration apiConfig) : base(httpClientService,apiConfig)
 		{
 
 		}
@@ -39,14 +39,18 @@ namespace RickNMorty.Common.Services
 
 		public async Task<List<Character>> GetCharacters(IEnumerable<int> characters)
 		{
-			if (characters != null && characters.Count() > 0)
+			if (characters != null && characters.Any())
 			{
-				var arrayAsString = String.Join(',', characters);
-				var response = await GetEnumerable<Character>($"character/{arrayAsString}");
-				if (response != null && response.Success)
+				var characterList = new List<Character>();
+				foreach (var character in characters)
 				{
-					return response.Data;
+					var response = await GetCharacter(character);
+					if (response != null && response.Success)
+					{
+						characterList.Add(response);
+					}
 				}
+				return characterList;
 			}
 			return new List<Character>();
 		}
